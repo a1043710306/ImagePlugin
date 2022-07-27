@@ -3,6 +3,7 @@ package com.aabbcc.event;
 import com.aabbcc.config.ThreadPool;
 import com.aabbcc.utils.HttpUtils2;
 import com.aabbcc.utils.PicUtils;
+import com.alibaba.fastjson.JSONObject;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.console.plugin.jvm.JavaPluginScheduler;
@@ -61,32 +62,59 @@ public class MsgEventHandler extends SimpleListenerHost {
     }
 
     private void msgProcess(MessageEvent event){
-      SingleMessage singleMessage=event.getMessage().get(PlainText.Key);
-      if(singleMessage!=null){
-          String msg=singleMessage.contentToString();
-          String cmd=properties.getProperty("cmd");
-          if(StringUtils.isEmpty(cmd)){
-              cmd="loli";
-          }
-          if(msg.equals(cmd)){
-              try {
-                  MsgSend(event);
-              } catch (IOException e) {
-                 e.printStackTrace();
-              }
-          }
-      }
+        MsgSend(event);
+        forwardGroupMsg(event);
+        getEpicMsg(event);
     }
 
-    private void MsgSend(MessageEvent event) throws IOException {
-       String aira2=properties.getProperty("aira2");
-       String outDir=properties.getProperty("outDir");
-       String r18=properties.getProperty("r18","1");
-       File file=PicUtils.getPicPath(aira2,outDir,Integer.valueOf(r18));
-       ExternalResource externalResource=ExternalResource.Companion.create(file);
-       Image image= ExternalResource.uploadAsImage(externalResource, event.getSubject());
-       event.getSubject().sendMessage(new MessageChainBuilder().append(image).build());
-       externalResource.close();
+    private void MsgSend(MessageEvent event)  {
+       try {
+           SingleMessage singleMessage=event.getMessage().get(PlainText.Key);
+           String msg=singleMessage.contentToString();
+           String cmd=properties.getProperty("cmd");
+           if(StringUtils.isEmpty(cmd)){
+               cmd="loli";
+           }
+           if(!msg.equals(cmd)){
+               return;
+           }
+           String aira2=properties.getProperty("aira2");
+           String outDir=properties.getProperty("outDir");
+           String r18=properties.getProperty("r18","1");
+           File file=PicUtils.getPicPath(aira2,outDir,Integer.valueOf(r18));
+           ExternalResource externalResource=ExternalResource.Companion.create(file);
+           Image image= ExternalResource.uploadAsImage(externalResource, event.getSubject());
+           event.getSubject().sendMessage(new MessageChainBuilder().append(image).build());
+           externalResource.close();
+       }catch (IOException e){
+           e.printStackTrace();
+       }
+    }
+
+    private void forwardGroupMsg(MessageEvent event){
+        Contact contact=event.getSubject();
+        SingleMessage text=event.getMessage().get(PlainText.Key);
+        long qq=event.getSender().getId();
+        //2439583838L
+
+        if(qq==2439583838L&& PicUtils.isSend(text.contentToString())){
+            log.info("forward fate  msg");
+            MessageChainBuilder message=new MessageChainBuilder();
+            for(SingleMessage singleMessage:event.getMessage()){
+                message.append(singleMessage);
+            }
+            event.getBot().getGroup(474564587L).sendMessage(message.build());
+        }
+        return;
+    }
+
+    private void getEpicMsg(MessageEvent event){
+        SingleMessage singleMessage=event.getMessage().get(PlainText.Key);
+        String msg=singleMessage.contentToString();
+        if(!msg.equals("epic")){
+            return;
+        }
+        event.getSubject().sendMessage(new MessageChainBuilder().append(PicUtils.getGamePush()).build());
     }
 
 }
