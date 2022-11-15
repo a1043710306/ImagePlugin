@@ -19,12 +19,15 @@ import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.ExternalResource;
 import net.mamoe.mirai.utils.MiraiLogger;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 
@@ -68,6 +71,9 @@ public class MsgEventHandler extends SimpleListenerHost {
           if(StringUtils.isEmpty(cmd)){
               cmd="loli";
           }
+          log.info("当前配置色图触发指令为 {}  前",cmd);
+          cmd=getUtf8String(cmd);
+          log.info("当前配置色图触发指令为 {}",cmd);
           if(msg.equals(cmd)){
               try {
                   MsgSend(event);
@@ -76,6 +82,15 @@ public class MsgEventHandler extends SimpleListenerHost {
               }
           }
       }
+    }
+
+    private String getUtf8String(String str)  {
+       try {
+           return new String(str.getBytes("iso8859-1"), Charset.forName("utf8"));
+       }catch (UnsupportedEncodingException e){
+           e.printStackTrace();
+       }
+       return "loli";
     }
 
     private void MsgSend(MessageEvent event) throws IOException {
