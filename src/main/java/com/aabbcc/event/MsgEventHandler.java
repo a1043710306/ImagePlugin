@@ -10,7 +10,6 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.*;
 import net.mamoe.mirai.utils.ExternalResource;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,12 +57,11 @@ public class MsgEventHandler extends SimpleListenerHost {
       if(singleMessage!=null){
           String msg=singleMessage.contentToString();
           String cmd=properties.getProperty("cmd");
-          if(StringUtils.isEmpty(cmd)){
+          if(cmd==null || "".equals(cmd)){
               cmd="loli";
           }
-          log.info("当前配置色图触发指令为 {}  前",cmd);
           cmd=getUtf8String(cmd);
-          log.info("当前配置色图触发指令为 {}",cmd);
+          System.out.println("当前配置色图触发指令为 "+cmd);
           if(msg.equals(cmd)){
               try {
                   MsgSend(event);

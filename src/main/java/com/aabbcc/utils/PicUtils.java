@@ -3,7 +3,9 @@ package com.aabbcc.utils;
 
 import com.aabbcc.Resp.ImageResp;
 import com.aabbcc.api.API;
-import com.alibaba.fastjson.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PicUtils {
-    private  static Logger log= LoggerFactory.getLogger(PicUtils.class);
+    private static Gson gson= new GsonBuilder().create();
 //    public static File getPicPath(String aira2c, String outDir, int r18)  {
 //        //final String cmd="D:\\aria2\\aria2c.exe %s  -d D:\\aria2\\pic  -o %s";
 //        String cmd=String.format("%s %s  -d %s  -o %s",aira2c,"%s",outDir,"%s");
@@ -74,8 +76,8 @@ public class PicUtils {
         try {
            byte [] respdata=CommandUtils.getInstance().execAndWaitResult(cmd);
            String resp=new String(respdata);
-           log.info("resp: {}",resp);
-           return JSONObject.parseObject(resp,ImageResp.class);
+           System.out.printf("resp: %S",resp);
+           return gson.fromJson(resp,ImageResp.class);
         }catch (IOException e){
             e.printStackTrace();
         } catch (InterruptedException e) {
