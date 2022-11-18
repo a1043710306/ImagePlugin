@@ -6,7 +6,6 @@ import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.utils.MiraiLogger;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.io.*;
 import java.nio.file.Path;

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.aabbcc'
-version = '0.1.0'
+version = '0.2.0'
 
 apply plugin: 'java'
 
@@ -19,8 +19,6 @@ dependencies{
 
     implementation ("org.apache.commons:commons-lang3:3.12.0")
 
-
-    implementation ("org.springframework.boot:spring-boot-starter-web:2.7.2")
 
     implementation ("com.alibaba:fastjson:2.0.10")
 
