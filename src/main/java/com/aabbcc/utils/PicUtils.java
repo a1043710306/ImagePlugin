@@ -54,7 +54,7 @@ public class PicUtils {
             String fileName=String.format("%s.%s",System.nanoTime()+"p",ext);
 
             Path path = Paths.get(outDir, fileName);
-            String cmd=String.format("wget  %s  -O %s",urld, path.toString());
+            String cmd=String.format("curl -L %s  -o %s",urld, path.toString());
 
             String dw=String.format(cmd,urld,fileName);
             try {
